@@ -4,21 +4,20 @@
 #define OUT_PIN 3
 
 volatile uint8_t update_made = 0;
-volatile uint8_t array[16] = {0,1,4,8,16,32,64,128,128,64,32,16,8,4,1,0};
+volatile uint8_t array[32] = {0,1,4,8,16,28,32,48,64,72,80,110,118,120,128,128,128,128,120,118,110,80,72,64,48,32,28,16,8,4,1,0};
 volatile uint8_t * volatile my_pointer = array;
 
 ISR ( TIMER4_COMPA_vect ) // play timer period
 {
   update_made++;
-  digitalWrite(LED_PIN, HIGH);
-  if (update_made >= 1*4) // 4 times x 50 ms = 200 ms play time
+  if (update_made >= 1) // 1 times x 50 ms = 50 ms play time
   {
   update_made = 0;
-  digitalWrite(LED_PIN, LOW);
   OCR2B = (uint8_t) (*my_pointer);
   my_pointer++;
   if (my_pointer >= array + sizeof(array)) { my_pointer = array; }
   }
+  digitalWrite(LED_PIN, !digitalRead(LED_PIN));
 }
 
 void setup() {
